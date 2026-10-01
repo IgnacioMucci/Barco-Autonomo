@@ -1,4 +1,3 @@
-
 // Nodo "equivalente" al de MAVROS, pero usando el camino nativo AP_DDS.
 // Acá NO mandamos µs directo: pensamos en µs y los traducimos a un eje
 // normalizado justo antes de publicar, usando pwm_to_axis().

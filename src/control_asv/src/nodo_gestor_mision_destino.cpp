@@ -1,4 +1,4 @@
-// nodo_gps_waypoint.cpp
+// nodo_gestor_mision_destino.cpp
 // Manda un punto de destino GPS a la Pixhawk vía AP_DDS. En modo GUIDED,
 // ArduPilot calcula toda la navegación (rumbo, velocidad, mezcla) para
 // llegar a ese punto por su cuenta.
@@ -20,10 +20,10 @@ constexpr uint8_t ROVER_MODE_GUIDED = 15;
 // que es "lat/lon en grados WGS84, altitud sobre el nivel del mar".
 constexpr uint8_t FRAME_GLOBAL_INT = 5;
 
-class NodoGpsWaypoint : public rclcpp::Node
+class NodoGestorMisionDestino : public rclcpp::Node
 {
 public:
-  NodoGpsWaypoint() : Node("nodo_gps_waypoint")
+  NodoGestorMisionDestino() : Node("nodo_gestor_mision_destino")
   {
     // Publisher del waypoint. 
     gps_publisher_ = this->create_publisher<ardupilot_msgs::msg::GlobalPosition>(
@@ -37,7 +37,7 @@ public:
     // Acá el timer es más que nada para simplificar. En un nodo real, probablemente publicamos el waypoint
     // una sola vez, o solo cuando cambia el objetivo.
     timer_ = this->create_wall_timer(
-      1s, std::bind(&NodoGpsWaypoint::enviar_waypoint, this));
+      1s, std::bind(&NodoGestorMisionDestino::enviar_waypoint, this));
 
     RCLCPP_INFO(this->get_logger(), "Enviando waypoint vía /ap/cmd_gps_pose...");
   }
@@ -96,7 +96,7 @@ private:
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<NodoGpsWaypoint>());
+  rclcpp::spin(std::make_shared<NodoGestorMisionDestino>());
   rclcpp::shutdown();
   return 0;
 }

@@ -53,7 +53,7 @@ add_executable(nodo_principal src/nodo_principal.cpp)
 ament_target_dependencies(nodo_principal rclcpp mavros_msgs)
 
 # Nodo MAVROS (PWM crudo)
-add_executable(nodo_mavros src/NodoMavros.cpp)
+add_executable(nodo_mavros src/nodo_mavros.cpp)
 ament_target_dependencies(nodo_mavros rclcpp mavros_msgs)
 
 # Nodo AP DDS (traduce PWM -> eje normalizado antes de publicar)
@@ -64,21 +64,22 @@ ament_target_dependencies(nodo_ap_dds_joy rclcpp sensor_msgs)
 add_executable(nodo_cmd_vel src/nodo_cmd_vel.cpp)
 ament_target_dependencies(nodo_cmd_vel rclcpp geometry_msgs ardupilot_msgs)
 
-# Nodo de Waypoints GPS 
-add_executable(nodo_gps_waypoint src/nodo_gps_waypoint.cpp)
-ament_target_dependencies(nodo_gps_waypoint rclcpp geographic_msgs ardupilot_msgs)
+# Nodo gestor de mision de destino. Agarra los paquetes de mission planner y 
+# le manda un destino (latitud y longitud) a la pixhawk
+add_executable(nodo_gestor_mision_destino src/nodo_gestor_mision_destino.cpp)
+ament_target_dependencies(nodo_gestor_mision_destino rclcpp geographic_msgs ardupilot_msgs)
 
 # Nodo de Telemetría
 add_executable(nodo_telemetria src/nodo_telemetria.cpp)
 ament_target_dependencies(nodo_telemetria rclcpp mavros_msgs sensor_msgs geometry_msgs)
 
 # Nodo de Traducción de MavLink a ros2
-add_executable(nodo_traductor_mission_planner src/nodo_traductor_mission_planner.cpp)
-ament_target_dependencies(nodo_traductor_mission_planner rclcpp geometry_msgs mavros_msgs)
+add_executable(nodo_gestor_mision_dist_rumbo src/nodo_gestor_mision_dist_rumbo.cpp)
+ament_target_dependencies(nodo_gestor_mision_dist_rumbo rclcpp geometry_msgs mavros_msgs)
 
 # Nodo de gestor de mision, agarra los paquetes de mission planner y los resuelve
-add_executable(nodo_gestor_mision src/nodo_gestor_mision.cpp)
-ament_target_dependencies(nodo_gestor_mision rclcpp mavros_msgs)
+add_executable(nodo_gestor_mision_pwm src/nodo_gestor_mision_pwm.cpp)
+ament_target_dependencies(nodo_gestor_mision_pwm rclcpp mavros_msgs)
 
 # Nodo de control de propulsión, una vez obtenida la ruta, la compu companion arma instrucciones para la placa de navegación
 # por ahora se controla con velocidades y angulos, pero si se quiere controlar con pwm entonces se debe usar mavros_msgs, y no geometry_msgs
@@ -92,10 +93,10 @@ install(TARGETS
   nodo_mavros
   nodo_ap_dds_joy
   nodo_cmd_vel
-  nodo_gps_waypoint
+  nodo_gestor_mision_destino
   nodo_telemetria
-  nodo_traductor_mission_planner
-  nodo_gestor_mision
+  nodo_gestor_mision_dist_rumbo
+  nodo_gestor_mision_pwm
   nodo_control_propulsion
   DESTINATION lib/${PROJECT_NAME}
 )

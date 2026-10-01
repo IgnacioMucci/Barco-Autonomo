@@ -64,8 +64,8 @@ def generate_launch_description():
         # nodo de alto nivel para gestión de misiones y waypoints basados en GPS
         Node(
             package='control_asv',
-            executable='nodo_gps_waypoint',
-            name='gps_node',
+            executable='nodo_gestor_mision_destino',
+            name='gestor_mission_destination_node',
             output='screen'
         ),
 
@@ -82,8 +82,8 @@ def generate_launch_description():
         # 
         Node(
             package='control_asv',
-            executable='nodo_gestor_mision',
-            name='gestor_mission_node',
+            executable='nodo_gestor_mision_dist_rumbo',
+            name='gestor_mission_distance_course_node',
             output='screen'
         ),
 

@@ -1,5 +1,5 @@
 /**
- * @file nodo_traductor_mission_planner.cpp
+ * @file nodo_gestor_mision_pwm.cpp
  * @brief Nodo de ROS 2 que traduce los comandos recibidos desde Mission Planner (vía MAVROS/MAVLink)
  *        a instrucciones que la placa de navegación (ArduRover) puede procesar.
  */
@@ -8,21 +8,21 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "mavros_msgs/msg/override_rc_in.hpp"
 
-class NodoTraductorMissionPlanner : public rclcpp::Node
+class NodoGestorMisionPWM : public rclcpp::Node
 {
 public:
-  NodoTraductorMissionPlanner() : Node("nodo_traductor_mission_planner")
+  NodoGestorMisionPWM() : Node("nodo_gestor_mision_pwm")
   {
     // Suscriptor que escucha los comandos de velocidad genéricos (que podrían venir mapeados desde Mission Planner)
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
       "/cmd_vel_planner", 10,
-      std::bind(&NodoTraductorMissionPlanner::cmd_vel_callback, this, std::placeholders::_1));
+      std::bind(&NodoGestorMisionPWM::cmd_vel_callback, this, std::placeholders::_1));
 
     // Publicador hacia MAVROS para convertir las órdenes a PWM crudo / Override de RC si se requiere control directo
     rc_override_pub_ = this->create_publisher<mavros_msgs::msg::OverrideRCIn>(
       "/mavros/rc/override", 10);
 
-    RCLCPP_INFO(this->get_logger(), "Nodo Traductor de Mission Planner iniciado correctamente.");
+    RCLCPP_INFO(this->get_logger(), "Nodo Gestor de misión traducido a PWM iniciado correctamente.");
   }
 
 private:
@@ -67,7 +67,7 @@ private:
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<NodoTraductorMissionPlanner>());
+  rclcpp::spin(std::make_shared<NodoGestorMisionPWM>());
   rclcpp::shutdown();
   return 0;
 }
