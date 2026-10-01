@@ -12,7 +12,6 @@ endif()
 
 # BÚSQUEDA DE DEPENDENCIAS
 find_package(ament_cmake REQUIRED)      # ament_cmake es el sistema de construcción (build system) estándar de ROS 2
-
 find_package(rclcpp REQUIRED)           # Librerías core de ROS 2 (C++)
 
 # Paquetes de tipos de mensajes estándar requeridos por los nodos
@@ -22,6 +21,9 @@ find_package(geographic_msgs REQUIRED)   # Para nodo_gps_waypoint (Latitud/Longi
 find_package(sensor_msgs REQUIRED)       # Para nodo_ap_dds_joy (sensor_msgs::msg::Joy)
 find_package(mavros_msgs REQUIRED)       # para nodo_mavros_override (mavros_msgs::msg::OverrideRCIn)
 find_package(ardupilot_msgs REQUIRED)    # para mensajes de ardupilot como estado, posicion, etc.
+
+# Para las cabeceras  
+include_directories(../../include)
 
 # CONFIGURACIÓN DE TESTING 
 if(BUILD_TESTING)
@@ -55,7 +57,7 @@ add_executable(nodo_mavros src/NodoMavros.cpp)
 ament_target_dependencies(nodo_mavros rclcpp mavros_msgs)
 
 # Nodo AP DDS (traduce PWM -> eje normalizado antes de publicar)
-add_executable(nodo_ap_dds_joy src/nodo_ap_dds_joy.cpp src/pwm_to_axis.cpp)
+add_executable(nodo_ap_dds_joy src/nodo_ap_dds_joy.cpp utils/pwm_to_axis.cpp)
 ament_target_dependencies(nodo_ap_dds_joy rclcpp sensor_msgs)
 
 # Nodo de Velocidades (cmd_vel) 
@@ -74,6 +76,15 @@ ament_target_dependencies(nodo_telemetria rclcpp mavros_msgs sensor_msgs geometr
 add_executable(nodo_traductor_mission_planner src/nodo_traductor_mission_planner.cpp)
 ament_target_dependencies(nodo_traductor_mission_planner rclcpp geometry_msgs mavros_msgs)
 
+# Nodo de gestor de mision, agarra los paquetes de mission planner y los resuelve
+add_executable(nodo_gestor_mision src/nodo_gestor_mision.cpp)
+ament_target_dependencies(nodo_gestor_mision rclcpp mavros_msgs)
+
+# Nodo de control de propulsión, una vez obtenida la ruta, la compu companion arma instrucciones para la placa de navegación
+# por ahora se controla con velocidades y angulos, pero si se quiere controlar con pwm entonces se debe usar mavros_msgs, y no geometry_msgs
+add_executable(nodo_control_propulsion src/nodo_control_propulsion.cpp utils/geo_utils.cpp)
+ament_target_dependencies(nodo_control_propulsion rclcpp geographic_msgs sensor_msgs geometry_msgs)
+
 # REGLAS DE INSTALACIÓN
 # Le dice a CMake dónde colocar los binarios compilados para que "ros2 run" los encuentre
 install(TARGETS
@@ -84,6 +95,8 @@ install(TARGETS
   nodo_gps_waypoint
   nodo_telemetria
   nodo_traductor_mission_planner
+  nodo_gestor_mision
+  nodo_control_propulsion
   DESTINATION lib/${PROJECT_NAME}
 )
 

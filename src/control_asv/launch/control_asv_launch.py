@@ -69,11 +69,30 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # nodo traductor de paquetes de mavlink enviados por mission planner a intrucciones de navegación
+        # nodo gestor de misión de bajo nivel (porque no le deja libertad a la placa)
+        # recibe paquetes mavlink de mission planner y los traduce a instrucciones pwm para la placa de navegación
         Node(
             package='control_asv',
-            executable='nodo_traductor_mission_planner',
-            name='traductor_mission_planner_node',
+            executable='nodo_gestor_mision_pwm',
+            name='gestor_mission_pwm_node',
+            output='screen'
+        ),
+
+        # nodo gestor de mision de alto nivel (le deja decidir a la placa cómo cumplir el objetivo propuesto)
+        # 
+        Node(
+            package='control_asv',
+            executable='nodo_gestor_mision',
+            name='gestor_mission_node',
+            output='screen'
+        ),
+
+        # nodo control de propulsión, son los comandos que le manda la computadora companion a la placa de navegación
+        # por ahora serán comandos de velocidad y ángulos, pero también se podrían agregar pwm
+        Node(
+            package='control_asv',
+            executable='nodo_control_propulsion',
+            name='propulsion_control_node',
             output='screen'
         ),
         
