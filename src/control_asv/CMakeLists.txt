@@ -86,6 +86,10 @@ ament_target_dependencies(nodo_gestor_mision_pwm rclcpp mavros_msgs)
 add_executable(nodo_control_propulsion src/nodo_control_propulsion.cpp utils/geo_utils.cpp)
 ament_target_dependencies(nodo_control_propulsion rclcpp geographic_msgs sensor_msgs geometry_msgs)
 
+# Nodo de companion que recibe y envía mensajes a la compu ground
+add_executable(nodo_enlace_ground src/nodo_enlace_ground.cpp)
+ament_target_dependencies(nodo_enlace_ground rclcpp mavros_msgs std_msgs)
+
 # REGLAS DE INSTALACIÓN
 # Le dice a CMake dónde colocar los binarios compilados para que "ros2 run" los encuentre
 install(TARGETS
@@ -98,13 +102,12 @@ install(TARGETS
   nodo_gestor_mision_dist_rumbo
   nodo_gestor_mision_pwm
   nodo_control_propulsion
+  nodo_enlace_ground
   DESTINATION lib/${PROJECT_NAME}
 )
 
 # INSTALACIÓN DEL ARCHIVO LAUNCH
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
-)
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 
 # Exporta la configuración del paquete para ament
 ament_package()

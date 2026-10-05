@@ -96,5 +96,17 @@ def generate_launch_description():
             output='screen'
         ),
         
+        Node(
+            package='control_asv',
+            executable='nodo_heartbeat_ground.py',
+            name='heartbeat_ground_node',
+            parameters=[{
+                'puerto': '/dev/ttyUSB2',
+                'baud': 57600,
+                'sysid': 2
+            }],
+            output='screen'
+        ),
+
         # acá seguiremos agregando los nodos q vayamos haciendo y queramos q arranquen al toque
     ])
