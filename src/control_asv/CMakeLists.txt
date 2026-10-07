@@ -21,6 +21,8 @@ find_package(geographic_msgs REQUIRED)   # Para nodo_gps_waypoint (Latitud/Longi
 find_package(sensor_msgs REQUIRED)       # Para nodo_ap_dds_joy (sensor_msgs::msg::Joy)
 find_package(mavros_msgs REQUIRED)       # para nodo_mavros_override (mavros_msgs::msg::OverrideRCIn)
 find_package(ardupilot_msgs REQUIRED)    # para mensajes de ardupilot como estado, posicion, etc.
+find_package(builtin_interfaces REQUIRED)
+find_package(std_srvs REQUIRED)
 
 # Para las cabeceras  
 include_directories(../../include)
@@ -90,6 +92,10 @@ ament_target_dependencies(nodo_control_propulsion rclcpp geographic_msgs sensor_
 add_executable(nodo_enlace_ground src/nodo_enlace_ground.cpp)
 ament_target_dependencies(nodo_enlace_ground rclcpp mavros_msgs std_msgs)
 
+# Nodo de prueba de comunicación entre la Pixhawk y la compu companion.
+add_executable(nodo_prueba_comunicacion src/nodo_prueba_comunicacion.cpp)
+ament_target_dependencies(nodo_prueba_comunicacion rclcpp builtin_interfaces sensor_msgs std_srvs)
+
 # REGLAS DE INSTALACIÓN
 # Le dice a CMake dónde colocar los binarios compilados para que "ros2 run" los encuentre
 install(TARGETS
@@ -103,6 +109,7 @@ install(TARGETS
   nodo_gestor_mision_pwm
   nodo_control_propulsion
   nodo_enlace_ground
+  nodo_prueba_comunicacion
   DESTINATION lib/${PROJECT_NAME}
 )
 
