@@ -8,7 +8,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"            // tipo de mensaje real que espera /ap/joy
-#include "control_asv/utils/pwm_to_axis.hpp"  // nuestra función de traducción
+#include "utils/pwm_to_axis.hpp"  // nuestra función de traducción
 
 using namespace std::chrono_literals;
 

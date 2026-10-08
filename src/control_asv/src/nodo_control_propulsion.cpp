@@ -8,7 +8,7 @@
 #include "geographic_msgs/msg/geo_point.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "geometry_msgs/msg/twist.hpp"
-#include "control_asv/utils/geo_utils.hpp"
+#include "utils/geo_utils.hpp"
 #include <cmath>
 #include <algorithm>
 

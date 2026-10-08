@@ -37,6 +37,8 @@ def generate_launch_description():
         ),
 
         # lanzamos la capa de comunicación MAVROS con la pixhawk
+        # desp nodo personalizado para mandar señales PWM crudas en microsegundos 
+        # a través del tópico /mavros/rc/override
         Node(
             package='mavros',
             executable='mavros_node',
@@ -47,7 +49,7 @@ def generate_launch_description():
                 'target_system_id': tgt_system,
                 'target_component_id': tgt_component
             }],
-            output='screen'
+            output='screen' # Redirige los logs y RCLCPP_INFO directamente a la terminal
         ),
 
         # Nodo de telemetría para recuperar vars de estado de la placa
@@ -56,15 +58,6 @@ def generate_launch_description():
             executable='nodo_telemetria',
             name='telemetria_node',
             output='screen'
-        ),
-
-        # desp nodo personalizado para mandar señales PWM crudas en microsegundos 
-        # a través del tópico /mavros/rc/override
-        Node(
-            package='control_asv',
-            executable='nodo_mavros',
-            name='mavros_override_node',
-            output='screen'  # Redirige los logs y RCLCPP_INFO directamente a la terminal
         ),
 
         # nodo secundario para el control de velocidad y rumbo intermedio (cmd_vel)
@@ -110,6 +103,5 @@ def generate_launch_description():
             output='screen'
         ),
         
-
         # acá seguiremos agregando los nodos q vayamos haciendo y queramos q arranquen al toque
     ])

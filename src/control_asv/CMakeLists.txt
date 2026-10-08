@@ -25,7 +25,7 @@ find_package(builtin_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
 
 # Para las cabeceras  
-include_directories(../../include)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # CONFIGURACIÓN DE TESTING 
 if(BUILD_TESTING)
@@ -88,10 +88,6 @@ ament_target_dependencies(nodo_gestor_mision_pwm rclcpp mavros_msgs)
 add_executable(nodo_control_propulsion src/nodo_control_propulsion.cpp utils/geo_utils.cpp)
 ament_target_dependencies(nodo_control_propulsion rclcpp geographic_msgs sensor_msgs geometry_msgs)
 
-# Nodo de companion que recibe y envía mensajes a la compu ground
-add_executable(nodo_enlace_ground src/nodo_enlace_ground.cpp)
-ament_target_dependencies(nodo_enlace_ground rclcpp mavros_msgs std_msgs)
-
 # Nodo de prueba de comunicación entre la Pixhawk y la compu companion.
 add_executable(nodo_prueba_comunicacion src/nodo_prueba_comunicacion.cpp)
 ament_target_dependencies(nodo_prueba_comunicacion rclcpp builtin_interfaces sensor_msgs std_srvs)
@@ -108,7 +104,6 @@ install(TARGETS
   nodo_gestor_mision_dist_rumbo
   nodo_gestor_mision_pwm
   nodo_control_propulsion
-  nodo_enlace_ground
   nodo_prueba_comunicacion
   DESTINATION lib/${PROJECT_NAME}
 )
