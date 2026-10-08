@@ -22,7 +22,21 @@ def generate_launch_description():
 
     # Lanzamiento, nodos a ejecutar:
     return LaunchDescription([
-        # primero lanzamos la capa de comunicación MAVROS con la pixhawk
+        # Lanzamos el nodo que se encarga de resolver la comunicación con mavlink
+        # enlace computadora companion - computadora ground
+        Node(
+            package='mavlink_bridge',
+            executable='ground_link_node',
+            name='ground_link',
+            parameters=[{
+                'conexion': '/dev/ttyUSB3',
+                'baud': 57600,
+                'sysid': 1
+            }],
+            output='screen'
+        ),
+
+        # lanzamos la capa de comunicación MAVROS con la pixhawk
         Node(
             package='mavros',
             executable='mavros_node',
@@ -96,17 +110,6 @@ def generate_launch_description():
             output='screen'
         ),
         
-        Node(
-            package='control_asv',
-            executable='nodo_heartbeat_ground.py',
-            name='heartbeat_ground_node',
-            parameters=[{
-                'puerto': '/dev/ttyUSB2',
-                'baud': 57600,
-                'sysid': 2
-            }],
-            output='screen'
-        ),
 
         # acá seguiremos agregando los nodos q vayamos haciendo y queramos q arranquen al toque
     ])
