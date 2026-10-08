@@ -1,3 +1,6 @@
+"""No contiene la lógica de comunicación. Su función es decirle a Python/ROS:
+Este directorio es un paquete Python instalable y este es el ejecutable que quiero crear."""
+
 from setuptools import find_packages, setup
 
 package_name = 'mavlink_bridge'
