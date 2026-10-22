@@ -20,37 +20,36 @@ class HeartbeatNode(Node):    # mi clase heartbeatnode hereda de Node
         # Parámetros de ROS para conexiones usb o udp, se pueden cambiar al lanzar con --ros-args -p nombre:=valor
         self.declare_parameter('conexion', '/dev/ttyUSB3')  # puerto serie, o 'udpout:IP:14550'
         self.declare_parameter('baud', 57600)               # solo se usa en serie
-        self.declare_parameter('sysid', 1)
-
-        """ Parametros de ROS viejos, para conexiones udp: se pueden cambiar al lanzar con --ros-args -p nombre:=valor
-        self.declare_parameter('gcs_ip', '192.168.0.229')   # IP de la PC con Mission Planner
-        self.declare_parameter('gcs_port', 14550)           # puerto UDP donde escucha MP
-        self.declare_parameter('sysid', 1)                  # ID MAVLink de este "vehiculo"""
+        self.declare_parameter('sysid', 1)       
+        # parámetros de la conexión con la pixhawk
+        self.declare_parameter('fcu', '/dev/ttyACM0')
+        self.declare_parameter('fcu_baud', 115200)
 
         # Leemos el valor final de cada parametro (el default o el se pasó por consola)
         conexion = self.get_parameter('conexion').value     
         baud = self.get_parameter('baud').value             
-        sysid = self.get_parameter('sysid').value
-
-        """Getters viejos de conexión udp - Leo el valor final de cada parametro (el default o el que pasaste por consola)
-        ip = self.get_parameter('gcs_ip').value
-        port = self.get_parameter('gcs_port').value
-        sysid = self.get_parameter('sysid').value"""
+        sysid = self.get_parameter('sysid').value   
+        # y también leemos los parámetros de los mensajes de la pixhawk   
+        fcu = self.get_parameter('fcu').value
+        fcu_baud = self.get_parameter('fcu_baud').value   
 
         # acá creamos la capa mavlink con ros2
-        self.link = AsvLink(conexion, baud, sysid)          # abro la conexion (serie o UDP segun el texto)
+        # abro la conexión de la computadora companion con la placa de autonavegación
+        # y con la computadora ground (serie o UDP segun el texto que mandemos por consola)
+        self.link = AsvLink(conexion, baud, sysid, fcu=fcu, fcu_baud=fcu_baud)
         self.n = 0                                          # contador de mensajes de texto enviados
         self.get_logger().info(f'MAVLink -> {conexion} @ {baud} (sysid {sysid})')   # log de arranque
-
-        """ Links viejos con udp
-        self.link = AsvLink(ip, port, sysid)  # abro el socket UDP hacia MP
-        self.n = 0                            # contador de mensajes de texto enviados
-        self.get_logger().info(f'MAVLink -> udp {ip}:{port} (sysid {sysid})')  # log de arranque"""
+        
 
         # Timers de ROS: cada uno llama a su funcion periodicamente
-        self.create_timer(1.0, self.on_heartbeat)   # 1 Hz, cada 1 segundo ejecutamos on_heartbeat
-        self.create_timer(5.0, self.on_status)      # mensaje breve cada 5 s de status
-        self.create_timer(0.05, self.on_rx)         # leer respuestas de MP (polling) cada 50ms
+        self.create_timer(0.01, self.on_rx)         # leer respuestas de MP (polling) cada 10ms
+        
+        # Estos dos timers se comentan ahora. Porque son mensajes que va a mandar la pixhawk
+        # y no necesitamos hardcodearlos!!
+        # self.create_timer(1.0, self.on_heartbeat)   # 1 Hz, cada 1 segundo ejecutamos on_heartbeat
+        # self.create_timer(5.0, self.on_status)      # mensaje breve cada 5 s de status
+        
+        
 
     def on_heartbeat(self):
         self.link.heartbeat()  # manda el HEARTBEAT (MP lo necesita ~1 vez por segundo)

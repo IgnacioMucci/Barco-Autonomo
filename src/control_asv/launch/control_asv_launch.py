@@ -29,79 +29,82 @@ def generate_launch_description():
             executable='ground_link_node',
             name='ground_link',
             parameters=[{
-                'conexion': '/dev/ttyUSB3',
+                'conexion': 'udpout:10.0.12.198:14550',                                
                 'baud': 57600,
-                'sysid': 1
+                'sysid': 1,
+                'fcu': '/dev/ttyACM0',
+                'fcu_baud': 115200
             }],
             output='screen'
         ),
 
-        # lanzamos la capa de comunicación MAVROS con la pixhawk
-        # desp nodo personalizado para mandar señales PWM crudas en microsegundos 
-        # a través del tópico /mavros/rc/override
-        Node(
-            package='mavros',
-            executable='mavros_node',
-            name='mavros',
-            parameters=[{
-                'fcu_url': fcu_url,
-                'gcs_url': gcs_url,
-                'target_system_id': tgt_system,
-                'target_component_id': tgt_component
-            }],
-            output='screen' # Redirige los logs y RCLCPP_INFO directamente a la terminal
-        ),
+        # # lanzamos la capa de comunicación MAVROS con la pixhawk
+        # # desp nodo personalizado para mandar señales PWM crudas en microsegundos 
+        # # a través del tópico /mavros/rc/override
+        # Node(
+        #     package='mavros',
+        #     executable='mavros_node',
+        #     name='mavros',
+        #     parameters=[{
+        #         'fcu_url': fcu_url,
+        #         'gcs_url': gcs_url,
+        #         'target_system_id': tgt_system,
+        #         'target_component_id': tgt_component
+        #     }],
+        #     output='screen' # Redirige los logs y RCLCPP_INFO directamente a la terminal
+        # ),
 
-        # Nodo de telemetría para recuperar vars de estado de la placa
-        Node(
-            package='control_asv',
-            executable='nodo_telemetria',
-            name='telemetria_node',
-            output='screen'
-        ),
-
-        # nodo secundario para el control de velocidad y rumbo intermedio (cmd_vel)
-        Node(
-            package='control_asv',
-            executable='nodo_cmd_vel',
-            name='cmd_vel_node',
-            output='screen'
-        ),
-
-        # nodo de alto nivel para gestión de misiones y waypoints basados en GPS
-        Node(
-            package='control_asv',
-            executable='nodo_gestor_mision_destino',
-            name='gestor_mission_destination_node',
-            output='screen'
-        ),
-
-        # nodo gestor de misión de bajo nivel (porque no le deja libertad a la placa)
-        # recibe paquetes mavlink de mission planner y los traduce a instrucciones pwm para la placa de navegación
-        Node(
-            package='control_asv',
-            executable='nodo_gestor_mision_pwm',
-            name='gestor_mission_pwm_node',
-            output='screen'
-        ),
-
-        # nodo gestor de mision de alto nivel (le deja decidir a la placa cómo cumplir el objetivo propuesto)
-        # 
-        Node(
-            package='control_asv',
-            executable='nodo_gestor_mision_dist_rumbo',
-            name='gestor_mission_distance_course_node',
-            output='screen'
-        ),
-
-        # nodo control de propulsión, son los comandos que le manda la computadora companion a la placa de navegación
-        # por ahora serán comandos de velocidad y ángulos, pero también se podrían agregar pwm
-        Node(
-            package='control_asv',
-            executable='nodo_control_propulsion',
-            name='propulsion_control_node',
-            output='screen'
-        ),
+        # # Nodo de telemetría para recuperar vars de estado de la placa
+        # Node(
+        #     package='control_asv',
+        #     executable='nodo_telemetria',
+        #     name='telemetria_node',
+        #     output='screen'
+        # ),
         
+        # """ Por ahora comentado porque vamos a debuggear los otros dos nodos !!
+        # # nodo secundario para el control de velocidad y rumbo intermedio (cmd_vel)
+        # Node(
+        #     package='control_asv',
+        #     executable='nodo_cmd_vel',
+        #     name='cmd_vel_node',
+        #     output='screen'
+        # ),
+
+        # # nodo de alto nivel para gestión de misiones y waypoints basados en GPS
+        # Node(
+        #     package='control_asv',
+        #     executable='nodo_gestor_mision_destino',
+        #     name='gestor_mission_destination_node',
+        #     output='screen'
+        # ),
+
+        # # nodo gestor de misión de bajo nivel (porque no le deja libertad a la placa)
+        # # recibe paquetes mavlink de mission planner y los traduce a instrucciones pwm para la placa de navegación
+        # Node(
+        #     package='control_asv',
+        #     executable='nodo_gestor_mision_pwm',
+        #     name='gestor_mission_pwm_node',
+        #     output='screen'
+        # ),
+
+        # # nodo gestor de mision de alto nivel (le deja decidir a la placa cómo cumplir el objetivo propuesto)
+        # # 
+        # Node(
+        #     package='control_asv',
+        #     executable='nodo_gestor_mision_dist_rumbo',
+        #     name='gestor_mission_distance_course_node',
+        #     output='screen'
+        # ),
+
+        # # nodo control de propulsión, son los comandos que le manda la computadora companion a la placa de navegación
+        # # por ahora serán comandos de velocidad y ángulos, pero también se podrían agregar pwm
+        # Node(
+        #     package='control_asv',
+        #     executable='nodo_control_propulsion',
+        #     name='propulsion_control_node',
+        #     output='screen'
+        # ),
+        # """
         # acá seguiremos agregando los nodos q vayamos haciendo y queramos q arranquen al toque
     ])
