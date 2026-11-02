@@ -3,8 +3,10 @@ from mavlink_bridge.mav_link import mavlink
 from mavlink_bridge.vehicle_state import MODOS_SOPORTADOS, RoverMode
 
 class Commands:
-    def __init__(self, link, state, sysid):
+    # ahora también recibimos telemetría
+    def __init__(self, link, state, sysid, telemetry):
         self.link, self.state, self.sysid = link, state, sysid
+        self.telemetry = telemetry
 
     def handle(self, m, log):
         t = m.get_type()
@@ -12,10 +14,16 @@ class Commands:
             if m.target_system in (0, self.sysid):
                 self._comando(m, log)
             return True
-        if t == 'SET_MODE':                       # forma vieja de cambiar de modo
+        if t == 'SET_MODE':                         # forma vieja de cambiar de modo
             if m.target_system == self.sysid:
                 self._cambiar_modo(int(m.custom_mode), log)
             return True
+        if t == 'AUTOPILOT_VERSION_REQUEST':        # se solicita versión de autopilot
+            if m.target_system in (0, self.sysid):
+                self._autopilot_version()
+            return True
+        if t in ('REQUEST_DATA_STREAM', 'STATUSTEXT'):
+            return True      # los reconocemos para no llenar el log
         return False
 
     def _ack(self, m, resultado):
@@ -56,6 +64,10 @@ class Commands:
                 self._autopilot_version()
             else:
                 self._ack(m, no)
+
+        elif c == mavlink.MAV_CMD_SET_MESSAGE_INTERVAL:         # setear intervalo de mensaje
+            ok_int = self.telemetry.set_interval(int(m.param1), int(m.param2))
+            self._ack(m, ok if ok_int else no)
 
         else:   # cualquier otra cosa: decirlo explícitamente evita que MP se quede esperando
             log.append(f'comando {c} no soportado')

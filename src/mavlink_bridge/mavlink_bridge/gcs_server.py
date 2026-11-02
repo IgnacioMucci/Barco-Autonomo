@@ -16,8 +16,8 @@ class GcsServer:
         self.state = VehicleState()
         self.telemetry = Telemetry(self.link, self.state)
         self.params = Params(self.link, sysid)
-        self.mission = Mission(self.link, sysid)
-        self.commands = Commands(self.link, self.state, sysid)
+        self.mission = Mission(self.link, sysid)        
+        self.commands = Commands(self.link, self.state, sysid, self.telemetry)  #add: telemetrías
         self._handlers = (self.params, self.mission, self.commands)
         self._ultimo_hb_gcs = None
         self._gcs_ok = False
