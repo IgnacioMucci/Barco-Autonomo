@@ -19,8 +19,8 @@ class GroundLinkNode(Node):
         self.declare_parameter('baud', 57600)               # solo se usa en serie
         self.declare_parameter('sysid', 1)
         # Solo para probar el HUD/mapa sin GPS: poné lat/lon distintos de 0
-        self.declare_parameter('fake_lat', 0.0)
-        self.declare_parameter('fake_lon', 0.0)
+        self.declare_parameter('fake_lat', 0.0) # ahora estamos poniendo latitudes falsas, pero luego esto se 
+        self.declare_parameter('fake_lon', 0.0) # va a incorporar con el gps rtk
 
         # Leemos el valor final de cada parametro (el default o el q se pasó por consola)
         conexion = self.get_parameter('conexion').value

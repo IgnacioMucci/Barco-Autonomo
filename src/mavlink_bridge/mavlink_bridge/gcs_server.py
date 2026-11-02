@@ -15,8 +15,8 @@ class GcsServer:
         self.link = AsvLink(conexion, baud, sysid)
         self.state = VehicleState()
         self.telemetry = Telemetry(self.link, self.state)
-        self.params = Params(self.link, sysid)
-        self.mission = Mission(self.link, sysid)        
+        self.params = Params(self.link, sysid)        
+        self.mission = Mission(self.link, self.state, sysid)                    #add: recibo estado
         self.commands = Commands(self.link, self.state, sysid, self.telemetry)  #add: telemetrías
         self._handlers = (self.params, self.mission, self.commands)
         self._ultimo_hb_gcs = None

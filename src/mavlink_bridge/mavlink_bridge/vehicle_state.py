@@ -41,6 +41,11 @@ class VehicleState:
     groundspeed: float = 0.0   # m/s
     cog_deg: float = 0.0       # rumbo de movimiento
     throttle: int = 0          # %
+    # home: ArduRover lo fija al armar si todavía no hay uno
+    home_set: bool = False
+    home_lat: float = 0.0
+    home_lon: float = 0.0
+    home_alt: float = 0.0
     t0: float = field(default_factory=time.monotonic)
 
     @property
