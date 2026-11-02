@@ -20,7 +20,7 @@ setup(
     zip_safe=True,
     maintainer='asv',
     maintainer_email='asv@example.com',
-    description='Heartbeat MAVLink a Mission Planner con pymavlink',
+    description='Conexión MAVLink a Mission Planner con pymavlink',
     license='MIT',
     entry_points={
         'console_scripts': [
