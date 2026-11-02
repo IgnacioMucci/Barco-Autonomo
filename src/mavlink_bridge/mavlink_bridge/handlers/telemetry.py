@@ -15,14 +15,28 @@ class Telemetry:
 
     def __init__(self, link, state):
         self.mav, self.state = link.mav, state
+        self.periodos = dict(self.PERIODOS)     # copia editable en runtime, para variar los periodos de telemetrías
         self._ultimo = {n: 0.0 for n in self.PERIODOS}
         self._fn = {'heartbeat': self.heartbeat, 'sys_status': self.sys_status,
                     'attitude': self.attitude, 'position': self.position,
                     'gps_raw': self.gps_raw, 'vfr_hud': self.vfr_hud}
 
+    def set_interval(self, msg_id, interval_us):
+        # -1 = desactivar, 0 = período por defecto, >0 = período en microsegundos.
+        nombre = self.IDS.get(msg_id)
+        if nombre is None or nombre == 'heartbeat':     # el heartbeat no se toca, corta
+            return False
+        if interval_us < 0:
+            self.periodos[nombre] = math.inf
+        elif interval_us == 0:
+            self.periodos[nombre] = self.PERIODOS[nombre]
+        else:
+            self.periodos[nombre] = interval_us / 1e6   # en microsegundos dije
+        return True
+
     def tick(self):
         # Llamar seguido: manda lo que ya toca según su período.
-        # (cada mensaje de telemetría tiene su frecuencia con la que aparece)
+        # (cada mensaje de telemetría tiene su frecuencia con la que aparece, que ahora es configurable)
         ahora = time.monotonic()
         for nombre, periodo in self.PERIODOS.items():
             if ahora - self._ultimo[nombre] >= periodo:
