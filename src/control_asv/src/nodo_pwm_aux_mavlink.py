@@ -1,6 +1,6 @@
 from pymavlink import mavutil
 
-# Cambiá esto por el puerto real de la Pixhawk.
+# Acá el puerto real de la Pixhawk.
 # Windows: "COM5"
 # Ubuntu/WSL: "/dev/ttyACM0"
 PORT = "COM10"
