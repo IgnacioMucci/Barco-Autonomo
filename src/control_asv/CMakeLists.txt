@@ -92,6 +92,10 @@ ament_target_dependencies(nodo_control_propulsion rclcpp geographic_msgs sensor_
 add_executable(nodo_prueba_comunicacion src/nodo_prueba_comunicacion.cpp)
 ament_target_dependencies(nodo_prueba_comunicacion rclcpp builtin_interfaces sensor_msgs std_srvs)
 
+# Nodo de prueba de pwm en la placa pixhawk
+add_executable(nodo_pwm_aux src/nodo_pwm_aux.cpp)
+ament_target_dependencies(nodo_pwm_aux rclcpp std_msgs mavros_msgs)
+
 # REGLAS DE INSTALACIÓN
 # Le dice a CMake dónde colocar los binarios compilados para que "ros2 run" los encuentre
 install(TARGETS
@@ -105,6 +109,7 @@ install(TARGETS
   nodo_gestor_mision_pwm
   nodo_control_propulsion
   nodo_prueba_comunicacion
+  nodo_pwm_aux
   DESTINATION lib/${PROJECT_NAME}
 )
 
