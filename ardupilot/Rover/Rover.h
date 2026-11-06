@@ -41,6 +41,7 @@
 #include <AP_Mission/AP_Mission.h>
 #include <AP_Mission/AP_Mission_ChangeDetector.h>
 #include <AR_WPNav/AR_WPNav_OA.h>
+#include <AP_MKS_Servo42C/AP_MKS_Servo42C.h>
 #include <AP_OpticalFlow/AP_OpticalFlow.h>
 #include <AC_PrecLand/AC_PrecLand_config.h>
 #include <AP_Follow/AP_Follow_config.h>
@@ -135,6 +136,7 @@ private:
     RC_Channel *channel_roll;
     RC_Channel *channel_pitch;
     RC_Channel *channel_walking_height;
+    AP_MKS_Servo42C mks_servo[2];                  // uno por stepper
 
     // flight modes convenience array
     AP_Int8 *modes;

@@ -19,6 +19,10 @@ void Rover::init_ardupilot()
 
     g2.windvane.init(serial_manager);
 
+    for (uint8_t i = 0; i < ARRAY_SIZE(mks_servo); i++) {
+    mks_servo[i].init(serial_manager, i);
+}
+
     // init baro before we start the GCS, so that the CLI baro test works
     barometer.init();
 
